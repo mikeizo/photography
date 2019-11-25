@@ -2,7 +2,7 @@
   <section class="navigation">
     <v-toolbar light>
       <v-toolbar-title @click="$vuetify.goTo('#home' , options)">
-        Title
+        Steve L. Photography
       </v-toolbar-title>
 
       <v-spacer />

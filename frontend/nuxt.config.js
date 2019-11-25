@@ -7,8 +7,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: 'Photography Portfolio',
+    title: 'Steve LePorisz - Photography Portfolio',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -19,9 +18,9 @@ export default {
       }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-      // { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Raleway:300,500,700' },
-      // { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Italianno' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Italianno' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Raleway:300,500,700' },
     ]
   },
   /*
