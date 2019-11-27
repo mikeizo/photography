@@ -5,6 +5,7 @@
     <About />
     <Photos />
     <Contact />
+    <span v-html="settings.tags" />
   </v-content>
 </template>
 
@@ -21,10 +22,16 @@ export default {
   },
   computed: {
     settings () {
-      return this.$store.getters['settings/loadedSettings']
-    },
-    photos () {
-      return this.$store.getters['photos/loadedPhotos']
+      return this.$store.state.settings.settings
+    }
+  },
+  head () {
+    return {
+      title: this.settings.meta_title,
+      meta: [
+        { hid: 'keywords', name: 'keywords', content: this.settings.meta_keywords },
+        { hid: 'description', name: 'description', content: this.settings.meta_description }
+      ]
     }
   }
 }

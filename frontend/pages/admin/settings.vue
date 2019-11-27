@@ -52,6 +52,36 @@
             />
           </v-col>
 
+          <!-- Meta Data -->
+          <v-col cols="12">
+            <v-text-field
+              @input="formHandler({ name: 'meta_title', value: $event })"
+              :value="settings.meta_title"
+              :rules="metaTitleRules"
+              label="Meta Title"
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-textarea
+              @input="formHandler({ name: 'meta_keywords', value: $event })"
+              :value="settings.meta_keywords"
+              :rules="metaKeywordRules"
+              label="Meta Keywords"
+              height="200"
+              filled
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-textarea
+              @input="formHandler({ name: 'meta_description', value: $event })"
+              :value="settings.meta_description"
+              label="Meta Description"
+              height="200"
+              filled
+            />
+          </v-col>
+
+          <!-- Images -->
           <v-col cols="12" sm="6">
             <v-card-title class="title">
               Background Image
@@ -153,6 +183,21 @@ export default {
       v => (v && v.length < 1500) || 'About must be less than 1500 characters',
       v => (v && v.length > 5) || 'About must be more than 5 characters'
     ],
+    metaTitleRules: [
+      v => !!v || 'Meta title is required',
+      v => (v && v.length < 60) || 'Meta title must be less than 60 characters',
+      v => (v && v.length > 5) || 'Title must be more than 5 characters'
+    ],
+    metaKeywordRules: [
+      v => !!v || 'Meta keywords is required',
+      v => (v && v.length < 255) || 'Meta keyword must be less than 255 characters',
+      v => (v && v.length > 5) || 'Meta keywords must be more than 5 characters'
+    ],
+    metaDescriptionRules: [
+      v => !!v || 'Meta description is required',
+      v => (v && v.length < 160) || 'Meta description must be less than 160 characters',
+      v => (v && v.length > 5) || 'Meta descriptions must be more than 5 characters'
+    ],
     alert: false,
     alert_type: null,
     alert_message: null
@@ -176,6 +221,9 @@ export default {
       formData.append('subtitle', this.settings.subtitle)
       formData.append('about', this.settings.about)
       formData.append('tags', this.settings.tags)
+      formData.append('meta_title', this.settings.meta_title)
+      formData.append('meta_keywords', this.settings.meta_keywords)
+      formData.append('meta_description', this.settings.meta_description)
 
       if (this.home_photo) {
         formData.append('home_photo', this.home_photo)

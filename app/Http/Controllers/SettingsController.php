@@ -36,11 +36,14 @@ class SettingsController extends Controller
     {
         // Validate form
         $validate_form = $request->validate([
-            'title'       => 'required|max:50|min:2',
-            'subtitle'    => 'required|max:100|min:5',
-            'about'       => 'required|max:1500|min:5',
-            'home_photo'  => 'mimes:jpeg,jpg,png,gif|max:10000',
-            'about_photo' => 'mimes:jpeg,jpg,png,gif|max:10000',
+            'title'             => 'required|max:50|min:2',
+            'subtitle'          => 'required|max:100|min:5',
+            'about'             => 'required|max:1500|min:5',
+            'meta_title'        => 'required|max:60|min:5',
+            'meta_keywords'     => 'required|max:255|min:5',
+            'meta_description'  => 'required|max:160|min:5',
+            'home_photo'        => 'mimes:jpeg,jpg,png,gif|max:10000',
+            'about_photo'       => 'mimes:jpeg,jpg,png,gif|max:10000',
         ]);
 
         if($validate_form) {
@@ -82,10 +85,13 @@ class SettingsController extends Controller
             DB::table('settings')->updateOrInsert(
                 ['id' => 1],
                 [
-                    'title'      => $input['title'],
-                    'subtitle'   => $input['subtitle'],
-                    'about'      => $input['about'],
-                    'tags'       => $input['tags']
+                    'title'             => $input['title'],
+                    'subtitle'          => $input['subtitle'],
+                    'about'             => $input['about'],
+                    'tags'              => $input['tags'],
+                    'meta_title'        => $input['meta_title'],
+                    'meta_keywords'     => $input['meta_keywords'],
+                    'meta_description'  => $input['meta_description']
                 ]
             );
 

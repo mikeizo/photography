@@ -2,7 +2,7 @@
   <section class="navigation">
     <v-toolbar light>
       <v-toolbar-title @click="$vuetify.goTo('#home' , options)">
-        Steve L. Photography
+        {{ title }}
       </v-toolbar-title>
 
       <v-spacer />
@@ -71,6 +71,7 @@ export default {
 
   data () {
     return {
+      title: process.env.APP_TITLE,
       // Navigation Draw
       drawer: null,
       mini: false,
