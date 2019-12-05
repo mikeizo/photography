@@ -101,14 +101,27 @@ class PhotoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $category_ids = array();
         $photo = Photo::find($id);
 
-        $photo->title = $request->title;
+        $photo->title = $request->photos[0]['title'];
         $photo->save();
 
         // Add categories
         $photo->categories()->sync($request->categories);
+    }
+
+    /**
+     * Remove the multiple resource from storage.
+     *
+     * @param  array  $photos
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkUpdate(Request $request)
+    {
+        foreach($request->photos as $value) {
+           $photo = Photo::find($value['id']);
+           $photo->categories()->sync($request->categories);
+        }
     }
 
     /**
@@ -141,7 +154,7 @@ class PhotoController extends Controller
      */
     public function bulkDestroy(Request $request)
     {
-        foreach($request->value as $photo) {
+        foreach($request->photos as $photo) {
             $delete_arr[] = $photo['id'];
 
             // Remove image + thumbnail
@@ -156,20 +169,6 @@ class PhotoController extends Controller
         }
 
         Photo::destroy($delete_arr);
-    }
-
-    /**
-     * Remove the multiple resource from storage.
-     *
-     * @param  array  $photos
-     * @return \Illuminate\Http\Response
-     */
-    public function bulkUpdate(Request $request)
-    {
-        foreach($request->photos as $value) {
-           $photo = Photo::find($value['id']);
-           $photo->categories()->sync($request->categories);
-        }
     }
 
     /**

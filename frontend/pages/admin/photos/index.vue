@@ -4,8 +4,16 @@
       Photos
     </h2>
 
+    <v-alert
+      :value="alert"
+      :type="alert_type"
+      dismissible
+      transition="fade-transition"
+    >
+      {{ alert_message }}
+    </v-alert>
+
     <!-- Bulk Actions -->
-    <!--
     <v-speed-dial
       v-model="fab"
       absolute
@@ -18,10 +26,10 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-model="fab"
+              v-on="on"
+              color="green"
               fab
               dark
-              color="green"
-              v-on="on"
             >
               <v-icon v-if="fab">
                 mdi-close
@@ -38,12 +46,12 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click="bulkAction='Update'"
+            v-on="on"
+            color="blue"
             fab
             dark
             small
-            color="blue"
-            @click="bulkAction='Update'"
-            v-on="on"
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
@@ -54,12 +62,12 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click="bulkAction='Delete'"
+            v-on="on"
+            color="red"
             fab
             dark
             small
-            color="red"
-            @click="bulkAction='Delete'"
-            v-on="on"
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
@@ -70,12 +78,12 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click="bulkAction=false"
+            v-on="on"
+            color="gray"
             fab
             dark
             small
-            color="gray"
-            @click="bulkAction=false"
-            v-on="on"
           >
             <v-icon>mdi-notification-clear-all</v-icon>
           </v-btn>
@@ -86,31 +94,25 @@
       </v-tooltip>
     </v-speed-dial>
 
-    <v-divider class="my-3" />
-
     <v-expand-transition>
-      <v-row
-        v-show="bulkAction=='Update'"
-        mb-3
-        row
-        wrap
-        style="white-space: nowrap"
-      >
-        <v-btn
-          :loading="loading"
-          color="green"
-          dark
-          large
+      <v-row v-show="bulkAction=='Update'">
+        <v-col
+          cols="12"
+          class="d-flex mb-5"
         >
-          Update
-        </v-btn>
-        <v-row wrap mt-0>
-          <v-flex
-            v-for="(category, index) in categories"
-            :key="index"
-            xs3
-            sm2
-            class="bulk-categories"
+          <v-btn
+            @click="updatePhotos"
+            :loading="loading"
+            color="green"
+            class="mr-5"
+            dark
+            large
+          >
+            Update
+          </v-btn>
+          <div
+            v-for="category in this.$store.state.categories.categories"
+            :key="category.id"
           >
             <v-checkbox
               v-model="categoriesSelected"
@@ -118,32 +120,32 @@
               :color="category.color"
               :value="category.id"
               hide-details
+              class="mr-5"
             />
-          </v-flex>
-        </v-row>
+          </div>
+        </v-col>
       </v-row>
     </v-expand-transition>
 
     <v-expand-transition>
-      <v-row
-        v-show="bulkAction=='Delete'"
-        mb-3
-        row
-        wrap
-      >
-        <v-btn
-          color="red"
-          dark
-          large
-          @click="photoDelete=photosSelected; type='photos';"
+      <v-row v-show="bulkAction=='Delete'">
+        <v-col
+          cols="12"
+          class="d-flex mb-5"
         >
-          Delete
-        </v-btn>
+          <v-btn
+            @click="deletePhotos"
+            :loading="loading"
+            color="red"
+            dark
+            large
+          >
+            Delete
+          </v-btn>
+        </v-col>
       </v-row>
     </v-expand-transition>
-    -->
 
-    {{ categories.id }}
     <!-- Table -->
     <v-data-table
       v-model="photosSelected"
@@ -227,24 +229,23 @@ export default {
     EditPhoto, DeleteDialog
   },
   data: () => ({
-    loading: false,
     headers: [
       { text: 'Photo', value: 'filename', align: 'left', sortable: false },
       { text: 'Title', value: 'title', align: 'left' },
       { text: 'Categories', value: 'categories', align: 'center', sortable: false },
-      { text: 'Actions', value: 'manage', align: 'right', sortable: false }
+      { text: 'Actions', value: 'manage', align: 'center', sortable: false }
     ],
-
-    bulkAction: '',
-    bulkList: ['', 'Delete', 'Update'],
-    error: false,
-    expand: false,
-    fab: false,
-    categoriesSelected: [],
     photoData: false,
     photoDelete: null,
-    type: '',
-    photosSelected: []
+    // bulk edit
+    fab: false,
+    loading: false,
+    bulkAction: '',
+    categoriesSelected: [],
+    photosSelected: [],
+    alert: false,
+    alert_message: null,
+    alert_type: null
   }),
   computed: {
     photos () {
@@ -270,27 +271,66 @@ export default {
     })
   },
   methods: {
-    /*
-    updatePhotos() {
-      this.loading=true
-      this.$store.dispatch('updateCategories', {
+    async updatePhotos () {
+      const Category = this
+      this.loading = true
+
+      const payload = {
         photos: this.photosSelected,
-        categories: this.categoriesSelected,
-      })
-      .catch(() => {
-        this.error=true
-      })
-      .finally(() => {
-        this.loading=false
-      })
+        categories: this.categoriesSelected
+      }
+
+      await this.$axios.post('admin/update-categories',
+        payload,
+        {
+          headers: {
+            'Authorization': this.$cookies.get('auth._token.local')
+          }
+        })
+        .then(function (response) {
+          Category.$store.dispatch('photos/updatePhotos', payload)
+          Category.alert_type = 'success'
+          Category.alert_message = 'Categories have been updated'
+        })
+        .catch(function (error) {
+          Category.alert_type = 'error'
+          Category.alert_message = error.response.data.message
+        })
+        .finally(() => {
+          Category.loading = false
+          Category.alert = true
+          Category.photosSelected = []
+        })
     },
-    refresh() {
-      this.photoData=false
-      this.photoDelete=null
-    },
-    errorSnackbar() {
-      this.error=true
-    } */
+    async deletePhotos () {
+      const Photos = this
+      this.loading = true
+
+      const payload = {
+        photos: this.photosSelected
+      }
+      await this.$axios.post('admin/delete-photos',
+        payload,
+        {
+          headers: {
+            'Authorization': this.$cookies.get('auth._token.local')
+          }
+        })
+        .then(function (response) {
+          Photos.$store.dispatch('photos/deletePhotos', payload)
+          Photos.alert_type = 'success'
+          Photos.alert_message = 'Photos have been deleted'
+        })
+        .catch(function (error) {
+          Photos.alert_type = 'error'
+          Photos.alert_message = error.response.data.message
+        })
+        .finally(() => {
+          Photos.loading = false
+          Photos.alert = true
+          Photos.photosSelected = []
+        })
+    }
   }
 }
 </script>

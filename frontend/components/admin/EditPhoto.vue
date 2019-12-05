@@ -117,9 +117,11 @@ export default {
       this.loading = true
       const Photo = this
       const payload = {
-        id: this.photoData.id,
         categories: this.categoriesSelected,
-        title: this.title
+        photos: [{
+          id: this.photoData.id,
+          title: this.title
+        }]
       }
 
       await this.$axios.put('admin/photos/' + this.photoData.id,
@@ -130,7 +132,7 @@ export default {
           }
         })
         .then(function (response) {
-          Photo.$store.dispatch('photos/updatePhoto', payload)
+          Photo.$store.dispatch('photos/updatePhotos', payload)
           Photo.photoData = false
         })
         .catch(function (error) {

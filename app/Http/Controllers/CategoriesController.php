@@ -75,20 +75,4 @@ class CategoriesController extends Controller
         $category->photos()->detach();
         $category->delete();
     }
-
-    /**
-     * Sort order of categories
-     * @param  Request $request [description]
-     */
-    public function sort(Request $request)
-    {
-        $order = $request->input('order');
-
-        foreach ($order as $key => $value) {
-            $category = Category::find($value);
-            $category->weight = $key;
-            $category->save();
-        }
-        die();
-    }
 }

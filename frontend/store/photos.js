@@ -6,19 +6,12 @@ export const mutations = {
   setPhotos (state, photos) {
     state.photos = photos
   },
-  updatePhoto (state, photoData) {
-    const categories = []
-    // Find Id of photo
-    const photoId = state.photos.findIndex(
-      photo => photo.id === photoData.id
-    )
-    // Format data
-    photoData.categories.forEach(function (val, index) {
-      categories[index] = { 'id': val }
-    })
+  updatePhoto (state, photo) {
+    state.photos[photo.id].categories = photo.categories
 
-    state.photos[photoId].title = photoData.title
-    state.photos[photoId].categories = categories
+    if (photo.title) {
+      state.photos[photo.id].title = photo.title
+    }
   },
   deletePhoto (state, id) {
     const photoId = state.photos.findIndex(
@@ -35,8 +28,26 @@ export const actions = {
         context.commit('setPhotos', response.data)
       })
   },
-  updatePhoto (context, photo) {
-    context.commit('updatePhoto', photo)
+  updatePhotos (context, photo) {
+    const categoriesArr = []
+
+    photo.photos.forEach(function (val, index) {
+      const photoId = context.state.photos.findIndex(
+        x => x.id === val.id
+      )
+
+      photo.categories.forEach(function (val, index) {
+        categoriesArr[index] = { 'id': val }
+      })
+
+      const data = {
+        'id': photoId,
+        'categories': categoriesArr,
+        'title': val.title
+      }
+
+      context.commit('updatePhoto', data)
+    })
   },
   updatePhotosCategory (context, photos) {
     context.commit('setPhotos', photos)
@@ -51,6 +62,11 @@ export const actions = {
       .then((response) => {
         context.commit('deletePhoto', photo.value)
       })
+  },
+  deletePhotos (context, photo) {
+    photo.photos.forEach(function (val, index) {
+      context.commit('deletePhoto', val.id)
+    })
   }
 }
 

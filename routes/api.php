@@ -22,9 +22,10 @@ Route::post('contact', 'ContactController@index');
 Route::middleware(['auth:api', 'isAdmin:api'])->prefix('admin')->group(function () {
     Route::resource('photos', 'PhotoController')->only(['store', 'update', 'destroy']);
     Route::resource('categories', 'CategoriesController')->only(['store', 'show', 'update', 'destroy']);
+    Route::post('update-categories', 'PhotoController@bulkUpdate');
+    Route::post('delete-photos', 'PhotoController@bulkDestroy');
     Route::post('settings', 'SettingsController@update');
 });
-
 
 // Authorization
 Route::middleware('api')->prefix('auth')->group(function () {
