@@ -1,22 +1,10 @@
 {
-  "version": 2,
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1.js",
-      "methods": ["GET", "POST", "DELETE"]
-    }
-  ],
   "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
     {
       "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
       "config": {
-        "serverFiles": ["api/**"]
+        "serverFiles": ["./api/**/*.js"]
       }
     }
   ]
