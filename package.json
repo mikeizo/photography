@@ -1,6 +1,6 @@
 {
-  "name": "Photography",
-  "author": "Mike",
+  "name": "photography",
+  "author": "Mike Tropea",
   "private": true,
   "scripts": {
     "dev": "nuxt",
