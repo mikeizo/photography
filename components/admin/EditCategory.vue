@@ -1,62 +1,64 @@
 <template>
-  <v-card class="pa-5">
-    <v-list-item class="px-0">
-      <v-list-item-content>
-        <v-list-item-title class="headline"> Edit Category </v-list-item-title>
-      </v-list-item-content>
-      <v-spacer />
-      <v-btn color="black" fab small dark @click="$emit('close-dialog')">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-list-item>
+  <v-dialog v-model="dialog" max-width="900px">
+    <v-card class="pa-5">
+      <v-list-item class="px-0">
+        <v-list-item-content>
+          <v-list-item-title class="headline">Edit Category</v-list-item-title>
+        </v-list-item-content>
+        <v-spacer />
+        <v-btn color="black" fab small dark @click="dialog = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-list-item>
 
-    <v-form @submit.prevent="saveCategory">
-      <v-row justify="space-between">
-        <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="category.name"
-            :value="category.name"
-            :rules="nameRules"
-            label="Name"
-            clearable
-          >
-            {{ category.name }}
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <v-select
-            v-model="category.color"
-            :value="category.color"
-            :background-color="category.color"
-            :items="colors"
-            :rules="colorRules"
-            label="Color"
-            prepend-icon="mdi-palette"
-            class="color-style"
-            dark
-          >
-            <template slot="item" slot-scope="data">
-              <v-row>
-                <v-col :class="data.item" cols="12" dark>
-                  <span class="white--text">
-                    {{ data.item }}
-                  </span>
-                </v-col>
-              </v-row>
-            </template>
-          </v-select>
-        </v-col>
-        <v-col cols="12">
-          <v-card-actions>
-            <v-spacer />
-            <v-btn :loading="loading" type="submit" color="green" dark>
-              Save
-            </v-btn>
-          </v-card-actions>
-        </v-col>
-      </v-row>
-    </v-form>
-  </v-card>
+      <v-form @submit.prevent="saveCategory">
+        <v-row justify="space-between">
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="category.name"
+              :value="category.name"
+              :rules="nameRules"
+              label="Name"
+              clearable
+            >
+              {{ category.name }}
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-select
+              v-model="category.color"
+              :value="category.color"
+              :background-color="category.color"
+              :items="colors"
+              :rules="colorRules"
+              label="Color"
+              prepend-icon="mdi-palette"
+              class="color-style"
+              dark
+            >
+              <template slot="item" slot-scope="data">
+                <v-row>
+                  <v-col :class="data.item" cols="12" dark>
+                    <span class="white--text">
+                      {{ data.item }}
+                    </span>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-select>
+          </v-col>
+          <v-col cols="12">
+            <v-card-actions>
+              <v-spacer />
+              <v-btn :loading="loading" type="submit" color="green" dark>
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -68,6 +70,7 @@ export default {
     }
   },
   data: () => ({
+    dialog: false,
     loading: false,
     oldName: '',
     nameRules: [
@@ -83,6 +86,12 @@ export default {
     },
     colors() {
       return this.$store.state.categories.colors
+    }
+  },
+
+  watch: {
+    category(val) {
+      this.dialog = true
     }
   },
 
@@ -102,12 +111,21 @@ export default {
           color,
           oldName: this.oldName
         })
-        .then(function (res) {
+        .then((res) => {
           Category.$emit('close-dialog')
           Category.$store.commit('categories/updateCategory', Category.category)
+          Category.$store.commit('setSnackbar', {
+            show: true,
+            message: 'Success! Category has been updated',
+            color: 'green'
+          })
         })
-        .catch(function (error) {
-          console.log(error)
+        .catch((error) => {
+          Category.$store.commit('setSnackbar', {
+            show: true,
+            message: error,
+            color: 'red'
+          })
         })
         .finally(() => {
           Category.loading = false

@@ -55,8 +55,19 @@ export default {
           .post('/api/photos/upload', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           })
+          .then(() => {
+            Form.$store.commit('setSnackbar', {
+              show: true,
+              message: 'Success! Your photos have been uploaded',
+              color: 'green'
+            })
+          })
           .catch((error) => {
-            console.log(error)
+            Form.$store.commit('setSnackbar', {
+              show: true,
+              message: error,
+              color: 'error'
+            })
           })
           .finally(() => {
             Form.loading = false

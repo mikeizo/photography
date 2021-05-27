@@ -138,11 +138,20 @@ export default {
 
       await this.$axios
         .post('/api/settings', this.settings)
-        .then(function (res) {
+        .then(() => {
           Settings.loading = true
+          Settings.$store.commit('setSnackbar', {
+            show: true,
+            message: 'Success! Settings have been updated',
+            color: 'green'
+          })
         })
-        .catch(function (error) {
-          console.log(error)
+        .catch((error) => {
+          Settings.$store.commit('setSnackbar', {
+            show: true,
+            message: error,
+            color: 'red'
+          })
         })
         .finally(() => {
           Settings.loading = false

@@ -1,7 +1,12 @@
 export default {
   state: () => ({
     contactDialog: false,
-    settings: []
+    settings: [],
+    snackbar: {
+      show: false,
+      message: '',
+      color: ''
+    }
   }),
 
   mutations: {
@@ -13,6 +18,9 @@ export default {
     },
     setSettings(state, value) {
       state.settings = value
+    },
+    setSnackbar(state, value) {
+      state.snackbar = value
     }
   },
 

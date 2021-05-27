@@ -80,11 +80,20 @@ export default {
 
         await this.$axios
           .post('/api/categories', this.category)
-          .then(function (res) {
+          .then(() => {
             Category.$router.push('/admin/categories')
+            Category.$store.commit('setSnackbar', {
+              show: true,
+              message: 'Success! Your category has been added',
+              color: 'green'
+            })
           })
-          .catch(function (error) {
-            console.log(error)
+          .catch((error) => {
+            Category.$store.commit('setSnackbar', {
+              show: true,
+              message: error,
+              color: 'error'
+            })
           })
           .finally(() => {
             Category.loading = false

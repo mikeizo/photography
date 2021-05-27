@@ -1,6 +1,7 @@
 <template>
   <v-app v-cloak>
     <Navigation />
+    <SnackBar />
     <transition name="fade" mode="out-in">
       <v-main>
         <v-container class="py-8 px-6" fluid>
@@ -19,10 +20,12 @@
 
 <script>
 import Navigation from '~/components/admin/Navigation'
+import SnackBar from '~/components/admin/SnackBar'
 
 export default {
   components: {
-    Navigation
+    Navigation,
+    SnackBar
   },
   middleware: ['auth', 'validate']
 }

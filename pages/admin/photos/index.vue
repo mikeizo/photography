@@ -59,9 +59,7 @@
     </v-data-table>
 
     <!-- DIALOG -->
-    <v-dialog v-model="dialog" max-width="900px">
-      <EditPhoto :photo-data="photoData" @close-dialog="dialog = false" />
-    </v-dialog>
+    <EditPhoto :photo-data="photoData" />
 
     <v-dialog
       v-if="deleteDialog"
@@ -100,7 +98,7 @@ export default {
   layout: 'admin',
   data: () => ({
     awsUrl: process.env.awsS3,
-    photoData: [],
+    photoData: {},
     dialog: false,
     deleteDialog: false,
     deleteID: null,

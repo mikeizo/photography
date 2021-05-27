@@ -28,12 +28,10 @@
         </v-btn>
       </template>
     </v-data-table>
-    <v-dialog v-model="dialog" max-width="900px">
-      <EditCategory
-        :category-data="categoryData"
-        @close-dialog="dialog = false"
-      />
-    </v-dialog>
+
+    <!-- DIALOG -->
+    <EditCategory :category-data="categoryData" />
+
     <v-dialog
       v-if="deleteDialog"
       v-model="deleteDialog"
@@ -69,7 +67,7 @@ export default {
     loading: false,
     dialog: false,
     selected: [],
-    categoryData: [],
+    categoryData: {},
     categoryDelete: '',
     deleteDialog: false,
     deleteItem: null,
