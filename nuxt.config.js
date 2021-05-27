@@ -1,5 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-// require('dotenv').config()
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -29,12 +28,12 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '@/plugins/vue-image-lightbox', mode: 'client' },
-    { src: '@/plugins/vue-lazyload' }
+    { src: '@/plugins/vue-lazyload' },
+    { src: '@/plugins/vue-gtag' }
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    ['@nuxtjs/dotenv', { only: [] }],
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
@@ -47,7 +46,8 @@ export default {
     '@nuxtjs/auth-next',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    ['@nuxtjs/dotenv', { only: ['APP_URL'] }]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -130,7 +130,7 @@ export default {
       login: '/admin/login',
       logout: '/admin/login',
       callback: '/admin/login',
-      home: '/admin'
+      home: '/admin/photos'
     },
     localStorage: false
   }
