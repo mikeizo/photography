@@ -1,12 +1,12 @@
+import express from 'express'
+import bodyParser from 'body-parser'
+import sgMail from '@sendgrid/mail'
 import { ObjectId } from 'mongodb'
 import { connectToDatabase } from '../utils/mongodb'
 import { date } from '../utils/date'
 import authenticateJWT from '../utils/authenticate'
-const express = require('express')
-const bodyParser = require('body-parser')
-const sgMail = require('@sendgrid/mail')
-const app = express()
 
+const app = express()
 app.use(bodyParser.json())
 
 // Get Settings
@@ -83,4 +83,4 @@ app.post('/contact', async (req, res) => {
   }
 })
 
-module.exports = app
+export default app

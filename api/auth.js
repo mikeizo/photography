@@ -1,10 +1,10 @@
+import express from 'express'
+import bodyParser from 'body-parser'
 import { compare } from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { connectToDatabase } from '../utils/mongodb'
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
 
+const app = express()
 app.use(bodyParser.json())
 
 // Login
@@ -36,4 +36,4 @@ app.post('/login', async (req, res) => {
   }
 })
 
-module.exports = app
+export default app
