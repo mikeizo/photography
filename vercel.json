@@ -6,9 +6,6 @@
       "dest": "/api/$1.js"
     }
   ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" }
-  ],
   "builds": [
     {
       "src": "api/**/*.js",
