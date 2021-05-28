@@ -1,7 +1,10 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/api/categories", "dest": "/api/categories.js" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1.js"
+    }
   ],
   "builds": [
     {

@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb'
+import express from 'express'
+import bodyParser from 'body-parser'
 import { connectToDatabase } from '../utils/mongodb'
 import { date } from '../utils/date'
 import authenticateJWT from '../utils/authenticate'
-const express = require('express')
-const bodyParser = require('body-parser')
-const app = express()
 
+const app = express()
 app.use(bodyParser.json())
 
 // List Categories
@@ -77,4 +77,4 @@ app.post('/', authenticateJWT, async (req, res) => {
   res.sendStatus(201)
 })
 
-module.exports = app
+export default app
