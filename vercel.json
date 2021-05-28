@@ -3,25 +3,20 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1.js",
-      "methods": ["GET", "POST", "DELETE"],
-      "headers": {
-        "Access-Control-Allow-Methods": "GET",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
+      "dest": "/api/$1.js"
     }
   ],
   "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
     {
       "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
       "config": {
         "serverFiles": ["api/**"]
       }
-    },
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
     }
   ]
 }
