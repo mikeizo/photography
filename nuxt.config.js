@@ -92,13 +92,16 @@ export default {
   },
 
   // Server Middleware API
-  serverMiddleware: {
-    '/api': '~/api/index',
-    '/api/photos': '~/api/photos',
-    '/api/categories': '~/api/categories',
-    '/api/auth': '~/api/auth',
-    '/api/hello': '~api/hello'
-  },
+  serverMiddleware:
+    process.env.NODE_ENV === 'production'
+      ? []
+      : [
+          { path: '/api', handler: '~/api/index' },
+          { path: '/api/photos', handler: '~/api/photos' },
+          { path: '/api/categories', handler: '~/api/categories' },
+          { path: '/api/auth', handler: '~/api/auth' },
+          { path: '/api/hello', handler: '~api/hello' }
+        ],
 
   watch: ['~/api/*.js', '~/utils/*.js'],
 
