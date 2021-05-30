@@ -25,7 +25,7 @@ app.get('/api/test', (req, res) => {
 })
 
 // Get Settings
-app.get('/settings', async (req, res) => {
+app.get('/api/settings', async (req, res) => {
   const { db } = await connectToDatabase()
   const settings = await db.collection('settings').findOne({})
 
@@ -33,7 +33,7 @@ app.get('/settings', async (req, res) => {
 })
 
 // Update settings
-app.post('/settings', authenticateJWT, async (req, res) => {
+app.post('/api/settings', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const {
     _id,
@@ -65,7 +65,7 @@ app.post('/settings', authenticateJWT, async (req, res) => {
 /**
  * Contact Form
  */
-app.post('/contact', async (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { name, email, comments } = req.body
   const regex = /^[A-Z0-9._-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
