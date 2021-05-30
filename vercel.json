@@ -1,6 +1,10 @@
 {
   "version": 2,
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/api/photos/(.*)", "destination": "/api/photos" },
+    { "source": "/api/categories/(.*)", "destination": "/api/categories" }
+  ],
   "builds": [
     {
       "src": "api/**/*.js",
