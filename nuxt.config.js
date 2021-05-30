@@ -99,8 +99,7 @@ export default {
           { path: '/api', handler: '~/api/index' },
           { path: '/api/photos', handler: '~/api/photos' },
           { path: '/api/categories', handler: '~/api/categories' },
-          { path: '/api/auth', handler: '~/api/auth' },
-          { path: '/api/hello', handler: '~api/hello' }
+          { path: '/api/auth', handler: '~/api/auth' }
         ],
 
   watch: ['~/api/*.js', '~/utils/*.js'],

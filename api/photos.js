@@ -11,7 +11,7 @@ const upload = require('../utils/upload')
 app.use(bodyParser.json())
 
 // List Photos
-app.get('/', async (req, res) => {
+app.get('/api', async (req, res) => {
   const { db } = await connectToDatabase()
   const { category } = req.query
   const filter = {}
@@ -30,7 +30,7 @@ app.get('/', async (req, res) => {
 })
 
 // Edit Photo
-app.post('/edit/:id', authenticateJWT, async (req, res) => {
+app.post('/api/edit/:id', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { id } = req.params
   const { category, title } = await req.body
@@ -49,7 +49,7 @@ app.post('/edit/:id', authenticateJWT, async (req, res) => {
 })
 
 // Delete Photo
-app.delete('/:id', authenticateJWT, async (req, res) => {
+app.delete('/api/:id', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { id } = req.params
 
@@ -62,7 +62,7 @@ app.delete('/:id', authenticateJWT, async (req, res) => {
 
 // Upload photos
 app.post(
-  '/upload',
+  '/api/upload',
   authenticateJWT,
   upload.array('photos', 40),
   async (req, res) => {

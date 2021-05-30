@@ -8,7 +8,7 @@ const app = express()
 app.use(bodyParser.json())
 
 // Login
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { db } = await connectToDatabase()
   const { username, password } = req.body
   const user = await db.collection('users').findOne({ username })
