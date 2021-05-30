@@ -11,7 +11,7 @@ const upload = require('../utils/upload')
 app.use(bodyParser.json())
 
 // List Photos
-app.get('/api', async (req, res) => {
+app.get('/api/photos', async (req, res) => {
   const { db } = await connectToDatabase()
   const { category } = req.query
   const filter = {}
