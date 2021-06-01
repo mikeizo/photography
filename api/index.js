@@ -95,4 +95,4 @@ app.post('/contact', async (req, res) => {
   }
 })
 
-export default { path: '/api', handler: app }
+export default app

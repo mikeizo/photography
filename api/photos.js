@@ -85,4 +85,4 @@ app.post(
   }
 )
 
-export default { path: '/api/photos', handler: app }
+export default app
