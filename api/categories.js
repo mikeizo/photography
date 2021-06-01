@@ -9,7 +9,7 @@ const app = express()
 app.use(bodyParser.json())
 
 // List Categories
-app.get('/api', async (req, res) => {
+app.get('/', async (req, res) => {
   const { db } = await connectToDatabase()
   const categories = await db
     .collection('categories')
@@ -21,7 +21,7 @@ app.get('/api', async (req, res) => {
 })
 
 // Edit Category
-app.post('/api/edit/:id', authenticateJWT, async (req, res) => {
+app.post('/edit/:id', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { id } = req.params
   const { name, color, oldName } = await req.body
@@ -47,7 +47,7 @@ app.post('/api/edit/:id', authenticateJWT, async (req, res) => {
 })
 
 // Delete Category
-app.delete('/api/:id', authenticateJWT, async (req, res) => {
+app.delete('/:id', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { id } = req.params
   const { name } = await req.body.item
@@ -63,7 +63,7 @@ app.delete('/api/:id', authenticateJWT, async (req, res) => {
 })
 
 // Add new Category
-app.post('/api/', authenticateJWT, async (req, res) => {
+app.post('/', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { name, color } = await req.body
   const insertDoc = {
