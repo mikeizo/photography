@@ -10,26 +10,15 @@ const app = express()
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-  res.setHeader('Content-Type', 'text/html')
-  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate')
-  res.end('Hello! Go to item:')
-})
-
-app.get('/api', (req, res) => {
   res.status(200).json('test - get').end()
 })
 
-app.get('/api', (req, res) => {
-  res.status(200).json('test - get').end()
-})
-
-
-app.post('/api/test', (req, res) => {
+app.post('/test', (req, res) => {
   res.status(200).json('test - post').end()
 })
 
 // Get Settings
-app.get('/api/settings', async (req, res) => {
+app.get('/settings', async (req, res) => {
   const { db } = await connectToDatabase()
   const settings = await db.collection('settings').findOne({})
 
@@ -37,7 +26,7 @@ app.get('/api/settings', async (req, res) => {
 })
 
 // Update settings
-app.post('/api/settings', authenticateJWT, async (req, res) => {
+app.post('/settings', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const {
     _id,
@@ -69,7 +58,7 @@ app.post('/api/settings', authenticateJWT, async (req, res) => {
 /**
  * Contact Form
  */
-app.post('/api/contact', async (req, res) => {
+app.post('/contact', async (req, res) => {
   const { name, email, comments } = req.body
   const regex = /^[A-Z0-9._-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
