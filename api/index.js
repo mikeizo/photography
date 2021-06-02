@@ -6,12 +6,8 @@ import { connectToDatabase } from '../utils/mongodb'
 import { date } from '../utils/date'
 import authenticateJWT from '../utils/authenticate'
 
-import photos from './photos'
-
 const app = express()
 app.use(bodyParser.json())
-
-app.use('/photos', photos)
 
 app.get('/', (req, res) => {
   res.status(200).json('test - get').end()
