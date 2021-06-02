@@ -2,23 +2,27 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import sgMail from '@sendgrid/mail'
 import { ObjectId } from 'mongodb'
+import { compare } from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { connectToDatabase } from '../utils/mongodb'
 import { date } from '../utils/date'
 import authenticateJWT from '../utils/authenticate'
 
+const upload = require('../utils/upload')
+
 const app = express()
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.status(200).json('test - get').end()
 })
 
-app.post('/test', (req, res) => {
+app.post('/api/test', (req, res) => {
   res.status(200).json('test - post').end()
 })
 
 // Get Settings
-app.get('/settings', async (req, res) => {
+app.get('/api/settings', async (req, res) => {
   const { db } = await connectToDatabase()
   const settings = await db.collection('settings').findOne({})
 
@@ -26,7 +30,7 @@ app.get('/settings', async (req, res) => {
 })
 
 // Update settings
-app.post('/settings', authenticateJWT, async (req, res) => {
+app.post('/api/settings', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const {
     _id,
@@ -58,7 +62,7 @@ app.post('/settings', authenticateJWT, async (req, res) => {
 /**
  * Contact Form
  */
-app.post('/contact', async (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { name, email, comments } = req.body
   const regex = /^[A-Z0-9._-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
@@ -88,6 +92,188 @@ app.post('/contact', async (req, res) => {
     res.sendStatus(200)
   } catch (error) {
     res.sendStatus(400)
+  }
+})
+
+/**
+ * Photos
+ */
+// List Photos
+app.get('/api/photos', async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { category } = req.query
+  const filter = {}
+
+  if (category) {
+    filter.category = category
+  }
+
+  const photos = await db
+    .collection('photos')
+    .find(filter)
+    .sort({ created_at: 1 })
+    .toArray()
+
+  res.status(200).json(photos)
+})
+
+// Edit Photo
+app.post('/api/photos/edit/:id', authenticateJWT, async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { id } = req.params
+  const { category, title } = await req.body
+
+  const updateDoc = {
+    $set: {
+      title,
+      category,
+      updated_at: date()
+    }
+  }
+
+  await db.collection('photos').updateOne({ _id: ObjectId(id) }, updateDoc)
+
+  res.sendStatus(201)
+})
+
+// Delete Photo
+app.delete('/api/photos/:id', authenticateJWT, async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { id } = req.params
+
+  await db.collection('photos').deleteOne({ _id: ObjectId(id) })
+
+  // Delete from AWS
+
+  res.sendStatus(200)
+})
+
+// Upload photos
+app.post(
+  '/api/photos/upload',
+  authenticateJWT,
+  upload.array('photos', 40),
+  async (req, res) => {
+    try {
+      // Save to MongoDB
+      const { db } = await connectToDatabase()
+      const insertDoc = req.files.map((photo) => {
+        return {
+          filename: photo.originalname,
+          category: [],
+          created_at: date()
+        }
+      })
+      await db.collection('photos').insertMany(insertDoc)
+
+      res.sendStatus(201)
+    } catch (err) {
+      res.sendStatus(500)
+    }
+  }
+)
+
+/**
+ * Categories
+ */
+// List Categories
+app.get('/api/categories', async (req, res) => {
+  const { db } = await connectToDatabase()
+  const categories = await db
+    .collection('categories')
+    .find({})
+    .sort({ name: 1 })
+    .toArray()
+
+  res.json(categories)
+})
+
+// Edit Category
+app.post('/api/categories/edit/:id', authenticateJWT, async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { id } = req.params
+  const { name, color, oldName } = await req.body
+
+  const updateDoc = {
+    $set: {
+      name,
+      color,
+      updated_at: date()
+    }
+  }
+
+  await db.collection('categories').updateOne({ _id: ObjectId(id) }, updateDoc)
+
+  // Update all categories in photos collection
+  if (name !== oldName) {
+    await db
+      .collection('photos')
+      .updateMany({ category: oldName }, { $set: { 'category.$': name } })
+  }
+
+  res.sendStatus(201)
+})
+
+// Delete Category
+app.delete('/api/categories/:id', authenticateJWT, async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { id } = req.params
+  const { name } = await req.body.item
+
+  // Remove all instances of category in photos collection
+  await db
+    .collection('photos')
+    .updateMany({}, { $pull: { category: { $in: [name] } } }, { multi: true })
+
+  await db.collection('categories').deleteOne({ _id: ObjectId(id) })
+
+  res.sendStatus(200)
+})
+
+// Add new Category
+app.post('/api/categories', authenticateJWT, async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { name, color } = await req.body
+  const insertDoc = {
+    name,
+    color,
+    created_at: date()
+  }
+
+  await db.collection('categories').insertOne(insertDoc)
+
+  res.sendStatus(201)
+})
+
+/**
+ * Auth
+ */
+// Login
+app.post('/api/auth/login', async (req, res) => {
+  const { db } = await connectToDatabase()
+  const { username, password } = req.body
+  const user = await db.collection('users').findOne({ username })
+
+  // hash(password, 10, function (err, hash) { console.log(hash) })
+
+  if (user) {
+    compare(password, user.password, function (err, result) {
+      if (!err && result) {
+        const accessToken = {
+          sub: user._id,
+          username: user.username,
+          role: user.role
+        }
+        const token = jwt.sign(accessToken, process.env.HASH_SECRET, {
+          expiresIn: '1h'
+        })
+        res.status(200).send(token)
+      } else {
+        res.sendStatus(401)
+      }
+    })
+  } else {
+    res.sendStatus(401)
   }
 })
 
