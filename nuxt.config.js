@@ -28,8 +28,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '@/plugins/vue-image-lightbox', mode: 'client' },
-    { src: '@/plugins/vue-lazyload' },
-    { src: '@/plugins/vue-gtag' }
+    { src: '@/plugins/vue-lazyload' }
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
@@ -37,7 +36,9 @@ export default {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    // https://google-analytics.nuxtjs.org/
+    '@nuxtjs/google-analytics'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -128,5 +129,9 @@ export default {
       home: '/admin/photos'
     },
     localStorage: false
+  },
+
+  googleAnalytics: {
+    id: 'UA-9077088-2'
   }
 }
