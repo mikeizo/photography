@@ -6,8 +6,10 @@
       <v-parallax :src="`${awsS3}/home-bg.jpg`" height="800">
         <v-row align="center" justify="center">
           <v-col class="caption text-center" cols="12">
-            <h2 class="display-3 mb-3 mt-0">{{ settings.title }}</h2>
-            <h1 class="display-1">{{ settings.subtitle }}</h1>
+            <h1 class="text-h4 text-sm-h3 mb-3 mt-0">
+              {{ settings.title }}
+            </h1>
+            <h2 class="text-subtitle-1">{{ settings.subtitle }}</h2>
           </v-col>
         </v-row>
       </v-parallax>
