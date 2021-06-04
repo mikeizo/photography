@@ -14,15 +14,15 @@
         </v-row>
       </v-parallax>
     </section>
-    <v-lazy
-      v-model="isActiveAbout"
-      :options="{ threshold: 0.25 }"
-      transition="fade-transition"
-    >
-      <section id="about" class="grey darken-4 white--text py-10">
-        <v-container>
-          <v-row justify="space-between">
-            <v-col sm="6" md="4">
+    <section id="about" class="grey darken-4 white--text py-10">
+      <v-container>
+        <v-row justify="space-between">
+          <v-col sm="6" md="4">
+            <v-lazy
+              v-model="isActiveAbout"
+              :options="{ threshold: 0.25 }"
+              transition="fade-transition"
+            >
               <v-card elevation="10">
                 <v-img
                   :lazy-src="`${awsS3}/about.jpg`"
@@ -36,23 +36,17 @@
                   </template>
                 </v-img>
               </v-card>
-            </v-col>
-            <v-col sm="5" md="7">
-              <h2 class="display-2 font-weight-light">About</h2>
-              <v-divider class="my-4" dark />
-              <div v-html="settings.about"></div>
-            </v-col>
-          </v-row>
-        </v-container>
-      </section>
-    </v-lazy>
-    <v-lazy
-      v-model="isActive"
-      :options="{ threshold: 0.25 }"
-      transition="fade-transition"
-    >
-      <Photos />
-    </v-lazy>
+            </v-lazy>
+          </v-col>
+          <v-col sm="5" md="7">
+            <h2 class="display-2 font-weight-light">About</h2>
+            <v-divider class="my-4" dark />
+            <div v-html="settings.about"></div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
+    <Photos />
   </v-main>
 </template>
 
