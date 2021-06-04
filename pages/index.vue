@@ -14,33 +14,45 @@
         </v-row>
       </v-parallax>
     </section>
-    <section id="about" class="grey darken-4 white--text py-10">
-      <v-container>
-        <v-row justify="space-between">
-          <v-col sm="6" md="4">
-            <v-card elevation="10">
-              <v-img
-                :lazy-src="`${awsS3}/about.jpg`"
-                :src="`${awsS3}/about.jpg`"
-                class="border--white"
-              >
-                <template #placeholder>
-                  <v-row class="fill-height" align="center" justify="center">
-                    <v-progress-circular indeterminate color="green" />
-                  </v-row>
-                </template>
-              </v-img>
-            </v-card>
-          </v-col>
-          <v-col sm="5" md="7">
-            <h2 class="display-2 font-weight-light">About</h2>
-            <v-divider class="my-4" dark />
-            <div v-html="settings.about"></div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
-    <Photos />
+    <v-lazy
+      v-model="isActiveAbout"
+      :options="{ threshold: 0.25 }"
+      transition="fade-transition"
+    >
+      <section id="about" class="grey darken-4 white--text py-10">
+        <v-container>
+          <v-row justify="space-between">
+            <v-col sm="6" md="4">
+              <v-card elevation="10">
+                <v-img
+                  :lazy-src="`${awsS3}/about.jpg`"
+                  :src="`${awsS3}/about.jpg`"
+                  class="border--white"
+                >
+                  <template #placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate color="green" />
+                    </v-row>
+                  </template>
+                </v-img>
+              </v-card>
+            </v-col>
+            <v-col sm="5" md="7">
+              <h2 class="display-2 font-weight-light">About</h2>
+              <v-divider class="my-4" dark />
+              <div v-html="settings.about"></div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </section>
+    </v-lazy>
+    <v-lazy
+      v-model="isActive"
+      :options="{ threshold: 0.25 }"
+      transition="fade-transition"
+    >
+      <Photos />
+    </v-lazy>
   </v-main>
 </template>
 
@@ -57,8 +69,8 @@ export default {
   },
 
   data: () => ({
-    description:
-      'This website is dedicated in memory of Stephen LePorisz. He had a passion for photography, and dedicated many hours to the art. View a some of the amazing photos taken by Steve he thought were some of his best pictures.'
+    isActive: false,
+    isActiveAbout: false
   }),
 
   head() {

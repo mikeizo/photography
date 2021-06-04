@@ -12,24 +12,17 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Italianno&display=swap'
-      }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['vue-image-lightbox/dist/vue-image-lightbox.min.css'],
+  css: [
+    '@/assets/scss/styles.scss',
+    'vue-image-lightbox/dist/vue-image-lightbox.min.css'
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    { src: '@/plugins/vue-image-lightbox', mode: 'client' },
-    { src: '@/plugins/vue-lazyload' }
-  ],
+  plugins: [{ src: '@/plugins/vue-image-lightbox', mode: 'client' }],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [

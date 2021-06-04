@@ -22,13 +22,13 @@
         <ul>
           <li v-for="(item, index) in menuItems" :key="index">
             <a
-              class="display-2 font-weight-thin"
+              class="text-h4 text-sm-h3 font-weight-thin"
               @click="scrollTo(item.target)"
               >{{ item.title }}</a
             >
           </li>
           <li>
-            <a class="display-2 font-weight-thin" @click="openDialog">
+            <a class="text-h4 text-sm-h3 font-weight-thin" @click="openDialog">
               Contact
             </a>
           </li>
@@ -81,7 +81,7 @@ export default {
 
 <style lang="scss" scoped>
 .v-toolbar__title {
-  font-family: 'Italianno', cursive;
+  font-family: 'Italianno';
   font-size: 2.5rem;
   @media only screen and (max-width: 500px) {
     font-size: 1.8rem;
@@ -93,6 +93,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(2px);
   ul {
     list-style-type: none;
     margin: 0;
