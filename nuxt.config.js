@@ -92,7 +92,12 @@ export default {
   serverMiddleware:
     process.env.NODE_ENV === 'production'
       ? []
-      : [{ path: '/', handler: '~/api/index' }],
+      : [
+          { path: '/api/settings', handler: '~/api/settings' },
+          { path: '/api/photos', handler: '~/api/photos' },
+          { path: '/api/categories', handler: '~/api/categories' },
+          { path: '/api/auth', handler: '~/api/auth' }
+        ],
 
   watch: ['~/api/*.js', '~/utils/*.js'],
 

@@ -1,9 +1,9 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import { ObjectId } from 'mongodb'
-import { connectToDatabase } from '../utils/mongodb'
-import { date } from '../utils/date'
-import authenticateJWT from '../utils/authenticate'
+import { connectToDatabase } from '../../utils/mongodb'
+import { date } from '../../utils/date'
+import authenticateJWT from '../../utils/authenticate'
 
 const app = express()
 app.use(bodyParser.json())

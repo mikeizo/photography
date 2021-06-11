@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { compare } from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { connectToDatabase } from '../utils/mongodb'
+import { connectToDatabase } from '../../utils/mongodb'
 
 const app = express()
 app.use(bodyParser.json())
