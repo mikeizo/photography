@@ -112,7 +112,7 @@ export default {
 
         // Post form input
         await this.$axios
-          .post(`/api/settings/contact`, postData)
+          .post(`/api/contact`, postData)
           .then(function (res) {
             Form.message = 'Your form has been submitted. Thank You!'
             Form.$refs.contactForm.reset()

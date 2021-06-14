@@ -44,7 +44,6 @@ export default {
     return {
       drawer: false,
       menuItems: [
-        { title: 'Home', target: '#home' },
         { title: 'About', target: '#about' },
         { title: 'Photos', target: '#photos' }
       ],
