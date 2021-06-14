@@ -39,9 +39,9 @@
             <span class="headline">Categories</span>
             <v-checkbox
               v-for="category in categories"
-              :key="category.name"
+              :key="category._id"
               v-model="photo.category"
-              :value="category.name"
+              :value="category._id"
               :label="category.name"
               :color="category.color"
               hide-details

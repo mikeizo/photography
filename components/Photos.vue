@@ -15,7 +15,7 @@
           v-for="category in categories"
           :key="category.name"
           flat
-          @click="getPhotos(category.name)"
+          @click="getPhotos(category._id)"
         >
           {{ category.name }}
         </v-tab>

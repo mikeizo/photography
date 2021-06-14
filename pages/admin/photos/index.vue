@@ -1,12 +1,13 @@
 <template>
   <v-col cols="12">
     <h2 class="display-1 font-weight-light">Photos</h2>
+
     <!-- Table -->
     <v-data-table
       v-model="photosSelected"
       :headers="headers"
       :items="photos"
-      :items-per-page="5"
+      :items-per-page="10"
       item-key="_id"
       show-select
       :footer-props="{
@@ -29,15 +30,11 @@
         </v-img>
       </template>
       <template #item.category="{ item }">
-        <v-chip
-          v-for="(categoryName, index) in item.category"
+        <CategoryChip
+          v-for="(id, index) in item.category"
           :key="index"
-          dark
-          class="mr-2"
-          :color="getColor(categoryName)"
-        >
-          {{ categoryName }}
-        </v-chip>
+          :category-data="getCategory(id)"
+        />
       </template>
       <template #item.created_at="{ item }">
         {{ item.created_at }}
@@ -91,10 +88,11 @@
 </template>
 
 <script>
+import CategoryChip from '~/components/admin/CategoryChip'
 import EditPhoto from '~/components/admin/EditPhoto'
 
 export default {
-  components: { EditPhoto },
+  components: { CategoryChip, EditPhoto },
   layout: 'admin',
   data: () => ({
     awsUrl: process.env.awsS3,
@@ -136,17 +134,13 @@ export default {
   },
 
   methods: {
-    getColor(name) {
+    getCategory(id) {
       if (this.categories.length) {
-        const index = this.categories.findIndex((category) => {
-          return name === category.name
+        const category = this.categories.find((cat) => {
+          return id === cat._id
         })
 
-        if (index === -1) {
-          return 'gray'
-        } else {
-          return this.categories[index].color
-        }
+        return category
       }
     },
 

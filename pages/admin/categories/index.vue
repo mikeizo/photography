@@ -103,9 +103,6 @@ export default {
         .delete(`/api/categories/${id}`, {
           headers: {
             'Content-Type': 'application/json'
-          },
-          data: {
-            item: this.deleteItem
           }
         })
         .then(function (res) {

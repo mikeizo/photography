@@ -184,7 +184,7 @@ app.get('/api/categories', async (req, res) => {
 app.post('/api/categories/edit/:id', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { id } = req.params
-  const { name, color, oldName } = await req.body
+  const { name, color } = await req.body
 
   const updateDoc = {
     $set: {
@@ -196,13 +196,6 @@ app.post('/api/categories/edit/:id', authenticateJWT, async (req, res) => {
 
   await db.collection('categories').updateOne({ _id: ObjectId(id) }, updateDoc)
 
-  // Update all categories in photos collection
-  if (name !== oldName) {
-    await db
-      .collection('photos')
-      .updateMany({ category: oldName }, { $set: { 'category.$': name } })
-  }
-
   res.sendStatus(201)
 })
 
@@ -210,12 +203,11 @@ app.post('/api/categories/edit/:id', authenticateJWT, async (req, res) => {
 app.delete('/api/categories/:id', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
   const { id } = req.params
-  const { name } = await req.body.item
 
   // Remove all instances of category in photos collection
   await db
     .collection('photos')
-    .updateMany({}, { $pull: { category: { $in: [name] } } }, { multi: true })
+    .updateMany({}, { $pull: { category: { $in: [id] } } }, { multi: true })
 
   await db.collection('categories').deleteOne({ _id: ObjectId(id) })
 

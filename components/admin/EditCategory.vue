@@ -72,7 +72,6 @@ export default {
   data: () => ({
     dialog: false,
     loading: false,
-    oldName: '',
     nameRules: [
       (v) => !!v || 'Name is required',
       (v) => (v && v.length < 25) || 'Name must be less than 25 characters',
@@ -95,10 +94,6 @@ export default {
     }
   },
 
-  mounted() {
-    this.oldName = this.categoryData.name
-  },
-
   methods: {
     async saveCategory() {
       this.loading = true
@@ -108,8 +103,7 @@ export default {
       await this.$axios
         .post(`/api/categories/edit/${_id}`, {
           name,
-          color,
-          oldName: this.oldName
+          color
         })
         .then((res) => {
           Category.$emit('close-dialog')
