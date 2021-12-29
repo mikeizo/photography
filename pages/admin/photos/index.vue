@@ -46,7 +46,7 @@
         <v-btn
           icon
           @click="
-            deleteID = item._id
+            deleteData = item
             deleteDialog = true
           "
         >
@@ -76,7 +76,7 @@
           <v-btn
             :loading="loading"
             color="error"
-            @click="deletePhoto(deleteID)"
+            @click="deletePhoto(deleteData)"
           >
             Delete
           </v-btn>
@@ -99,7 +99,7 @@ export default {
     photoData: {},
     dialog: false,
     deleteDialog: false,
-    deleteID: null,
+    deleteData: {},
     headers: [
       { text: 'Photo', value: 'filename', align: 'left', sortable: false },
       { text: 'Title', value: 'title', align: 'left' },
@@ -153,14 +153,16 @@ export default {
       return time.format('MM/DD/YYYY')
     },
 
-    async deletePhoto(id) {
+    async deletePhoto(photoData) {
       const Photos = this
       this.loading = true
 
+      console.log(photoData)
+
       await this.$axios
-        .delete(`api/photos/${id}`)
+        .post(`api/photos/delete`, photoData)
         .then(function (res) {
-          Photos.$store.commit('photos/deletePhoto', id)
+          Photos.$store.commit('photos/deletePhoto', photoData._id)
         })
         .finally(() => {
           Photos.loading = false

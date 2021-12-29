@@ -7,8 +7,7 @@ import jwt from 'jsonwebtoken'
 import { connectToDatabase } from '../utils/mongodb'
 import { date } from '../utils/date'
 import authenticateJWT from '../utils/authenticate'
-
-const upload = require('../utils/upload')
+import { uploadPhotos, deletePhoto } from '../utils/upload'
 
 const app = express()
 app.use(bodyParser.json())
@@ -129,13 +128,13 @@ app.post('/api/photos/edit/:id', authenticateJWT, async (req, res) => {
 })
 
 // Delete Photo
-app.delete('/api/photos/:id', authenticateJWT, async (req, res) => {
+app.post('/api/photos/delete', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
-  const { id } = req.params
 
-  await db.collection('photos').deleteOne({ _id: ObjectId(id) })
+  await db.collection('photos').deleteOne({ _id: ObjectId(req.body._id) })
 
   // Delete from AWS
+  deletePhoto(req.body)
 
   res.sendStatus(200)
 })
@@ -144,7 +143,7 @@ app.delete('/api/photos/:id', authenticateJWT, async (req, res) => {
 app.post(
   '/api/photos/upload',
   authenticateJWT,
-  upload.array('photos', 40),
+  uploadPhotos.array('photos', 40),
   async (req, res) => {
     try {
       // Save to MongoDB

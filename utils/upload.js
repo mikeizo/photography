@@ -13,7 +13,7 @@ config.update({
 
 const s3 = new S3()
 
-const upload = multer({
+export const uploadPhotos = multer({
   storage: multerS3({
     s3,
     bucket: process.env.AWS_BUCKET,
@@ -27,4 +27,14 @@ const upload = multer({
   })
 })
 
-module.exports = upload
+export const deletePhoto = (photoData) => {
+  s3.deleteObject(
+    {
+      Bucket: process.env.AWS_BUCKET,
+      Key: `photography/photos/${photoData.filename}`
+    },
+    (err) => {
+      console.error(err)
+    }
+  )
+}
