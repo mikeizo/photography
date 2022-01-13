@@ -15,8 +15,15 @@ export default {
     },
 
     deletePhoto(state, val) {
-      const index = state.photos.findIndex((x) => x._id === val)
-      state.photos.splice(index, 1)
+      if (Array.isArray(val)) {
+        val.forEach((element) => {
+          const index = state.photos.findIndex((x) => x._id === element._id)
+          state.photos.splice(index, 1)
+        })
+      } else {
+        const index = state.photos.findIndex((x) => x._id === val._id)
+        state.photos.splice(index, 1)
+      }
     }
   },
 

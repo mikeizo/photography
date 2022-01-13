@@ -1,6 +1,23 @@
 <template>
   <v-col cols="12">
-    <h2 class="display-1 font-weight-light">Photos</h2>
+    <v-row>
+      <v-col cols="auto" class="mr-auto">
+        <h2 class="display-1 font-weight-light">Photos</h2>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn
+          v-if="photosSelected.length"
+          elevation="2"
+          color="error"
+          @click="
+            deleteData = photosSelected
+            deleteDialog = true
+          "
+        >
+          Delete
+        </v-btn>
+      </v-col>
+    </v-row>
 
     <!-- Table -->
     <v-data-table
@@ -58,41 +75,23 @@
     <!-- DIALOG -->
     <EditPhoto :photo-data="photoData" />
 
-    <v-dialog
-      v-if="deleteDialog"
-      v-model="deleteDialog"
-      persistent
-      max-width="500px"
+    <DeleteDialog
+      :delete-dialog="deleteDialog"
+      :loading="loading"
+      @deleteInput="closeDeleteDialog"
     >
-      <v-card class="pa-2">
-        <v-card-title class="h4">
-          <v-spacer></v-spacer>
-          Are you sure you want to delete?
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red" text @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn
-            :loading="loading"
-            color="error"
-            @click="deletePhoto(deleteData)"
-          >
-            Delete
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      Are you sure you want to delete?
+    </DeleteDialog>
   </v-col>
 </template>
 
 <script>
 import CategoryChip from '~/components/admin/CategoryChip'
 import EditPhoto from '~/components/admin/EditPhoto'
+import DeleteDialog from '~/components/admin/DeleteDialog'
 
 export default {
-  components: { CategoryChip, EditPhoto },
+  components: { CategoryChip, EditPhoto, DeleteDialog },
   layout: 'admin',
   data: () => ({
     awsUrl: process.env.awsS3,
@@ -149,6 +148,14 @@ export default {
       this.dialog = true
     },
 
+    closeDeleteDialog(value) {
+      if (value) {
+        this.deletePhoto(this.deleteData)
+      } else {
+        this.deleteDialog = false
+      }
+    },
+
     formatTime(time) {
       return time.format('MM/DD/YYYY')
     },
@@ -157,12 +164,10 @@ export default {
       const Photos = this
       this.loading = true
 
-      console.log(photoData)
-
       await this.$axios
         .post(`api/photos/delete`, photoData)
         .then(function (res) {
-          Photos.$store.commit('photos/deletePhoto', photoData._id)
+          Photos.$store.commit('photos/deletePhoto', photoData)
         })
         .finally(() => {
           Photos.loading = false

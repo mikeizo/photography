@@ -102,7 +102,7 @@ app.get('/api/photos', async (req, res) => {
   const photos = await db
     .collection('photos')
     .find(filter)
-    .sort({ created_at: 1 })
+    .sort({ created_at: -1 })
     .toArray()
 
   res.status(200).json(photos)
@@ -130,12 +130,21 @@ app.post('/api/photos/edit/:id', authenticateJWT, async (req, res) => {
 // Delete Photo
 app.post('/api/photos/delete', authenticateJWT, async (req, res) => {
   const { db } = await connectToDatabase()
+  const photos = req.body
 
-  await db.collection('photos').deleteOne({ _id: ObjectId(req.body._id) })
-
-  // Delete from AWS
-  deletePhoto(req.body)
-
+  if (Array.isArray(photos)) {
+    photos.forEach(async function (element) {
+      // Delete from MongoDB
+      await db.collection('photos').deleteOne({ _id: ObjectId(element._id) })
+      // Delete from AWS
+      deletePhoto(element)
+    })
+  } else {
+    // Delete from MongoDB
+    await db.collection('photos').deleteOne({ _id: ObjectId(photos._id) })
+    // Delete from AWS
+    deletePhoto(photos)
+  }
   res.sendStatus(200)
 })
 

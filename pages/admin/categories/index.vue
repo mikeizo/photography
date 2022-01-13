@@ -20,7 +20,7 @@
         <v-btn
           icon
           @click="
-            deleteItem = item
+            deleteData = item
             deleteDialog = true
           "
         >
@@ -32,36 +32,22 @@
     <!-- DIALOG -->
     <EditCategory :category-data="categoryData" />
 
-    <v-dialog
-      v-if="deleteDialog"
-      v-model="deleteDialog"
-      persistent
-      max-width="500px"
+    <DeleteDialog
+      :delete-dialog="deleteDialog"
+      :loading="loading"
+      @deleteInput="closeDeleteDialog"
     >
-      <v-card class="pa-2">
-        <v-card-title class="h4">
-          <v-spacer></v-spacer>
-          Are you sure you want to delete?
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red" text @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn :loading="loading" color="error" @click="deleteCategory">
-            Delete
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      Are you sure you want to delete?
+    </DeleteDialog>
   </v-col>
 </template>
 
 <script>
+import DeleteDialog from '~/components/admin/DeleteDialog'
 import EditCategory from '~/components/admin/EditCategory'
 
 export default {
-  components: { EditCategory },
+  components: { DeleteDialog, EditCategory },
   layout: 'admin',
   data: () => ({
     loading: false,
@@ -70,7 +56,7 @@ export default {
     categoryData: {},
     categoryDelete: '',
     deleteDialog: false,
-    deleteItem: null,
+    deleteData: null,
     headers: [
       { text: 'Name', value: 'name', align: 'left', sortable: true },
       { text: 'Color', value: 'color', align: 'center', sortable: true },
@@ -94,10 +80,18 @@ export default {
       this.dialog = true
     },
 
+    closeDeleteDialog(value) {
+      if (value) {
+        this.deleteCategory(this.deleteData)
+      } else {
+        this.deleteDialog = false
+      }
+    },
+
     async deleteCategory() {
       this.loading = true
       const Category = this
-      const id = this.deleteItem._id
+      const id = this.deleteData._id
 
       await this.$axios
         .delete(`/api/categories/${id}`, {
