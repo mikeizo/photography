@@ -7,7 +7,6 @@
       <v-spacer />
       <v-btn color="green" plain @click.stop="drawer = !drawer">
         <v-icon left>mdi-menu</v-icon>
-        Menu
       </v-btn>
     </v-app-bar>
     <v-navigation-drawer
